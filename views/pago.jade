@@ -1,0 +1,9 @@
+extends layout
+
+block content
+    h1= title
+    form#formNuevoPago(name="nuevopago",method="post",action="/pagos")
+        input#inputTrxId(type="text", placeholder="Transaction id", name="trxid")
+        input#inputMsisdn(type="text", placeholder="Numero", name="msisdn")
+        input#inputMonto(type="text", placeholder="Monto", name="monto")
+        button#btnSubmit(type="submit") submit
