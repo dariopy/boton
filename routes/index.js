@@ -73,9 +73,18 @@ router.post('/pagos', function(req, res, next){
 	.auth('4IBddIrfdGWvZJhBXaGrGwM74rDRujYW', 'pXfxrpw2U20CByFM', true); 		
 });
 
+/* POST handle callback */
+router.post('/result', function(req, res, next) {
+  // primero log en la consola
+	console.log(req.body);  
+  // Grabar en BD
+
+});
+
 /* GET resultado de pago */
 router.get('/result', function(req, res, next) {
-  res.render('result', { title: 'Resultado de Pago' });
+  //res.render('result', { title: 'Resultado de Pago' });
+  res.json(req.body);
 });
 
 
