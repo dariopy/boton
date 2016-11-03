@@ -35,8 +35,8 @@ router.post('/pagos', function(req, res, next){
 								"countryCode": "595",
 								"country":"PRY"
 							},
-							"redirectUri":"http://10.255.8.2:8080/PaymentGWClientJavaEnvironment/servlet/com.paymentgwclient.areturnpro",
-							"callbackUri":"http://10.255.8.2:8080/PaymentGWClientJavaEnvironment/servlet/com.paymentgwclient.areturnpro",
+							"redirectUri":"http://ec2-54-164-69-208.compute-1.amazonaws.com:3000/result",
+							"callbackUri":"http://ec2-54-164-69-208.compute-1.amazonaws.com:3000/result",
 							"language":"spa",
 							"OriginPayment": {
 								"amount": req.body.monto,
