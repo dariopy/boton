@@ -2,6 +2,9 @@ var express = require('express');
 var router = express.Router();
 var request = require('request');
 
+// load the Payment model
+var Payment = require('../models/payment');
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
@@ -78,6 +81,7 @@ router.post('/result', function(req, res, next) {
   // primero log en la consola
 	console.log(req.body);  
   // Grabar en BD
+  //Payment.create()
 
 });
 
@@ -85,6 +89,36 @@ router.post('/result', function(req, res, next) {
 router.get('/result', function(req, res, next) {
   //res.render('result', { title: 'Resultado de Pago' });
   res.json(req.body);
+});
+
+router.get('/dbtest', function(req, res, next) {
+	//display contents of db and allow creating dummy data
+	Payment.find(function(err, payments){
+					if (err)
+						res.send(err);
+					res.render('dbtest', { pagos: payments});
+				});
+});
+
+router.post('/dbtest', function(req, res, next){
+	// insert dummy Payment data
+	var fakeId = new Date().getTime();
+	Payment.create({
+		transactionStatus : "Dummy",
+    merchantTransactionId : fakeId,
+			mfsTransactionId: "Dummy",
+			transactionCode: "Dummy"
+	}, function(err, payment){
+				if(err)
+					res,send(err);
+				// get and return all the todos after you create another
+				Payment.find(function(err, payments){
+					if (err)
+						res.send(err);
+					res.render('dbtest', { pagos: payments});
+				});
+	});
+
 });
 
 
