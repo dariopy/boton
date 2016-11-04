@@ -3,11 +3,18 @@ extends layout
 block content
   h1= title
   p #{title}
-  ul
-    for pago in pagos
-      li= pago.merchantTransactionId
-    else
-      li Sorry, no hay pagos!
+  div
+    table
+      thead
+        tr: th Pagos
+      tbody
+        each pago in pagos
+          tr
+            td= pago.merchantTransactionId
+            td= pago.transactionStatus
+            td= pago.mfsTransactionId
+        else
+          li Sorry, no hay pagos!
   p Nuevo Dummy
     form#formNuevoDummy(name="nuevodummy",method="post",action="/dbtest")
         button#btnSubmit(type="submit") Nuevo

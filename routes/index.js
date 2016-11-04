@@ -80,14 +80,29 @@ router.post('/pagos', function(req, res, next){
 router.post('/result', function(req, res, next) {
   // primero log en la consola
 	console.log(req.body);  
-  // Grabar en BD
-  //Payment.create()
+  // Grabar en BD  
+  Payment.create({
+		transactionStatus : req.body.transactionStatus,
+    merchantTransactionId : req.body.merchantTransactionId,
+		mfsTransactionId: req.body.mfsTransactionId,
+		transactionCode: req.body.transactionCode
+	}, function(err, payment){
+				if(err)
+					console.error(err);
+				// get and return all the todos after you create another
+				/*Payment.find(function(err, payments){
+					if (err)
+						res.send(err);
+					res.render('dbtest', { pagos: payments});
+				});*/
+	});
 
 });
 
 /* GET resultado de pago */
 router.get('/result', function(req, res, next) {
   //res.render('result', { title: 'Resultado de Pago' });
+  // buscar en BD lo que vino en el callback
   res.json(req.body);
 });
 
@@ -110,8 +125,8 @@ router.post('/dbtest', function(req, res, next){
 			transactionCode: "Dummy"
 	}, function(err, payment){
 				if(err)
-					res,send(err);
-				// get and return all the todos after you create another
+					res.send(err);
+				// get and return all the payments after you create another
 				Payment.find(function(err, payments){
 					if (err)
 						res.send(err);
