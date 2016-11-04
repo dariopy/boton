@@ -100,10 +100,14 @@ router.post('/result', function(req, res, next) {
 });
 
 /* GET resultado de pago */
-router.get('/result', function(req, res, next) {
-  //res.render('result', { title: 'Resultado de Pago' });
+router.get('/result', function(req, res, next) {  
+  //por ahora solo mostrar todos los pagos  
+  Payment.find(function(err, payments){
+					if (err)
+						res.send(err);
+					res.render('dbtest', { pagos: payments});
+				});
   // buscar en BD lo que vino en el callback
-  res.json(req.body);
 });
 
 router.get('/dbtest', function(req, res, next) {
