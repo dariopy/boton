@@ -8,6 +8,8 @@ var apigeeClientSecret = 'pXfxrpw2U20CByFM';
 var url_auth = 'https://securesandbox.tigo.com/v1/oauth/mfs/payments/tokens';
 var url_pay = 'https://securesandbox.tigo.com/v2/tigo/mfs/payments/authorizations';
 var url_rd = 'https://securesandbox.tigo.com/v2/tigo/mfs/payments/transactions/PRY';
+var url_callback = 'http://ec2-54-209-91-24.compute-1.amazonaws.com:3000/result'
+var url_redirect = 'http://ec2-54-209-91-24.compute-1.amazonaws.com:3000/result'
 
 var merchantId = 'TigoShop';
 
@@ -48,8 +50,8 @@ router.post('/pagos', function(req, res, next){
 								"countryCode": "595",
 								"country":"PRY"
 							},
-							"redirectUri":"http://ec2-54-164-69-208.compute-1.amazonaws.com:3000/result",
-							"callbackUri":"http://ec2-54-164-69-208.compute-1.amazonaws.com:3000/result",
+							"redirectUri":url_redirect,
+							"callbackUri":url_callback,
 							"language":"spa",
 							"OriginPayment": {
 								"amount": req.body.monto,
@@ -76,6 +78,7 @@ router.post('/pagos', function(req, res, next){
 								} else {
 									console.error("Error: http response code " + response.statusCode);
 									console.error(paymentBody);
+									res.json(paymentBody);
 								}
 							}
 							).auth(null, null, true, token); 
