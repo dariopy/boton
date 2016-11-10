@@ -118,7 +118,7 @@ router.get('/result', function(req, res, next) {
   Payment.find(function(err, payments){
 					if (err)
 						res.send(err);
-					res.render('dbtest', { pagos: payments});
+					res.render('result', { pagos: payments});
 				});
   // buscar en BD lo que vino en el callback
 });

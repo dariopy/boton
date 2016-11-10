@@ -3,8 +3,15 @@ extends layout
 block content
   h1= title
   p #{title}
-  ul
-  	for pago in pagos
-  		li= pago.merchantTransactionId
-  	else
-  		li Sorry, no hay pagos!
+  div
+    table
+      thead
+        tr: th Pagos
+      tbody
+        each pago in pagos
+          tr
+            td= pago.merchantTransactionId
+            td= pago.transactionStatus
+            td= pago.mfsTransactionId
+        else
+          li Sorry, no hay pagos!
