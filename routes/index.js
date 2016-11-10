@@ -2,6 +2,16 @@ var express = require('express');
 var router = express.Router();
 var request = require('request');
 
+// configuration params. TO DO: refactor
+var apigeeClientKey = '4IBddIrfdGWvZJhBXaGrGwM74rDRujYW';
+var apigeeClientSecret = 'pXfxrpw2U20CByFM';
+var url_auth = 'https://securesandbox.tigo.com/v1/oauth/mfs/payments/tokens';
+var url_pay = 'https://securesandbox.tigo.com/v2/tigo/mfs/payments/authorizations';
+var url_rd = 'https://securesandbox.tigo.com/v2/tigo/mfs/payments/transactions/PRY';
+
+var merchantId = 'TigoShop';
+
+
 // load the Payment model
 var Payment = require('../models/payment');
 
@@ -12,14 +22,14 @@ router.get('/', function(req, res, next) {
 
 /* GET form nuevo pago. */
 router.get('/pagos', function(req, res, next) {
-  res.render('pago', { title: 'Nuevo Pago' });
+  res.render('pago', { title: 'Demo de Pagos' });
 });
 
 /* POST form nuevo pago. */
 router.post('/pagos', function(req, res, next){
 	// obtener token
 	request.post(
-    'https://securesandbox.tigo.com/v1/oauth/mfs/payments/tokens',
+    url_auth,
     { form: { grant_type: 'client_credentials' } },
     function (error, response, tokenBody) {
         if (!error && response.statusCode == 200) {
@@ -31,7 +41,7 @@ router.post('/pagos', function(req, res, next){
     					"MasterMerchant": {
 								"account":"0986777961",
 								"pin":"1234",
-								"id":"TigoShop"
+								"id": merchantId
 							},
 							"Subscriber": {
 								"account": req.body.msisdn,
@@ -55,7 +65,7 @@ router.post('/pagos', function(req, res, next){
 						};  					
 						// post payment request
 						request.post(
-							'https://securesandbox.tigo.com/v2/tigo/mfs/payments/authorizations',
+							url_pay,
 							{ json : payload },
 							function (error, response, paymentBody){
 								if (!error && response.statusCode == 200) {
@@ -73,7 +83,7 @@ router.post('/pagos', function(req, res, next){
     }
 	)
 	//basic auth with client key and secret
-	.auth('4IBddIrfdGWvZJhBXaGrGwM74rDRujYW', 'pXfxrpw2U20CByFM', true); 		
+	.auth(apigeeClientKey, apigeeClientSecret, true); 		
 });
 
 /* POST handle callback */
@@ -140,6 +150,73 @@ router.post('/dbtest', function(req, res, next){
 
 });
 
+// delete a payment
+router.post('/revertir', function (req, res, next) {
+	// obtener token
+	request.post(
+    url_auth,
+    { form: { grant_type: 'client_credentials' } },
+    function (error, response, tokenBody) {
+    	if (!error && response.statusCode == 200) {
+            console.log(tokenBody);
+            // extraer token de la respuesta
+            var token = JSON.parse(tokenBody).accessToken;
+            // DELETE request para reversar la transacción
+            request.delete(
+            	url_rd + '/' + merchantId + '/' + req.body.trxid,
+            	function (error, response, paymentBody){
+								if (!error && response.statusCode == 200) {
+									console.log(paymentBody);
+									// redireccionar a payment server de Tigo									
+									res.json(paymentBody);
+								} else {
+									console.error("Error: http response code " + response.statusCode);	
+									res.send("No existe pago con ese id");
+								}
+							}
+            ).auth(null, null, true, token);
+          };
+
+    })
+    //basic auth with client key and secret
+		.auth(apigeeClientKey, apigeeClientSecret, true);
+});
+
+// get a payment status
+router.get('/consultar', function (req, res, next) {
+	// obtener token
+	request.post(
+    url_auth,
+    { form: { grant_type: 'client_credentials' } },
+    function (error, response, tokenBody) {
+    	if (!error && response.statusCode == 200) {
+            console.log(tokenBody);
+            // extraer token de la respuesta
+            var token = JSON.parse(tokenBody).accessToken;
+            // GET request para obtener el objeto JSON con la transacción
+            request(
+            	url_rd + '/' + merchantId + '/' + req.query.trxid,
+            	function (error, response, paymentBody){
+								if (!error && response.statusCode == 200) {
+									console.log(paymentBody);
+									// redireccionar a payment server de Tigo									
+									// res.json(paymentBody);
+									res.render('detalle', 
+										{ title: 'Demo de Pagos',
+											pago: JSON.parse(paymentBody)
+									 	});
+								} else {
+									console.error("Error: http response code " + response.statusCode);
+									res.send("No existe pago con ese id");
+								}
+							}
+            ).auth(null, null, true, token);
+          };
+
+    })
+    //basic auth with client key and secret
+		.auth(apigeeClientKey, apigeeClientSecret, true);	
+});
 
 
 module.exports = router;

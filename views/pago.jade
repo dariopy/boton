@@ -2,8 +2,19 @@ extends layout
 
 block content
     h1= title
+    h2 Nuevo Pago
     form#formNuevoPago(name="nuevopago",method="post",action="/pagos")
         input#inputTrxId(type="text", placeholder="Transaction id", name="trxid")
         input#inputMsisdn(type="text", placeholder="Numero", name="msisdn")
         input#inputMonto(type="text", placeholder="Monto", name="monto")
+        button#btnSubmit(type="submit") submit
+
+    h2 Consultar Pago
+    form#formNuevoPago(name="consultarpago",method="get",action="/consultar")
+        input#inputTrxId(type="text", placeholder="Transaction id", name="trxid")        
+        button#btnSubmit(type="submit") submit
+
+    h2 Revertir Pago
+    form#formNuevoPago(name="revertirpago",method="post",action="/revertir")
+        input#inputTrxId(type="text", placeholder="Transaction id", name="trxid")        
         button#btnSubmit(type="submit") submit

@@ -1,0 +1,21 @@
+extends layout
+
+block content
+    h1= title
+    // PAYMENT INFO
+    #paymentInfo
+      h2 Payment Info
+        p
+          strong Merchant TrxId:
+          |  <span id='merchantTrxId'> #{pago.Transaction.merchantTransactionId} </span>
+          br
+          strong Timestamp:
+          |  <span id='timestamp'> #{pago.Transaction.createdOn} </span>
+          br
+          strong Status:
+          |  <span id='trxStatus'> #{pago.Transaction.status} </span>
+          br
+          strong MFS TrxId:
+          |  <span id='mfsTrxId'> #{pago.Transaction.mfsTransactionId} </span>
+          br            
+    // /PAYMENT INFO
